@@ -1,0 +1,12 @@
+*.deb
+*.h5
+*.png
+*.jpg
+*.jpeg
+logs
+models
+wandb
+.ipynb_checkpoints
+*.keras
+*.tmp
+
