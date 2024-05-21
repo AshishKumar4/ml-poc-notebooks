@@ -45,8 +45,8 @@ class NeuralNet(Model):
         return self.layers
 
     def accuracy(self, x_test, y_test):
-        preds = np.array(antiCategorical(self.__call__(x_test))).get()
-        expected = np.array(antiCategorical(y_test)).get()
+        preds = jnp.array(antiCategorical(self.__call__(x_test)))
+        expected = jnp.array(antiCategorical(y_test))
         acc = sklearn.metrics.accuracy_score(expected, preds)
         return acc
     

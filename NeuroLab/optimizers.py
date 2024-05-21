@@ -19,7 +19,7 @@ class Optimizer:
         self.on_train_start(**kwargs)
 
         for epoch in range(epochs):
-            shuffle_indices = np.random.permutation(len(x_train))
+            shuffle_indices = jax.random.permutation(get_random_key(), len(x_train))
             x_train = x_train[shuffle_indices]
             y_train = y_train[shuffle_indices]
 
@@ -94,13 +94,13 @@ class SADense(SimulatedAnnealingLayer, Dense):
     def forward_with_perturbations(self, inputs, perturbations):
         delta_w, delta_b = perturbations
         self.inputs = inputs
-        self.output = np.dot(inputs, self.weights + delta_w) + self.biases + delta_b
+        self.output = jnp.dot(inputs, self.weights + delta_w) + self.biases + delta_b
         return self.output
 
     def perturb_parameters(self, stddev = 0.1):
         """Randomly perturbs weights and biases with a given standard deviation."""
-        perturbation_weights = np.random.randn(*self.weights.shape) * stddev
-        perturbation_biases = np.random.randn(*self.biases.shape) * stddev
+        perturbation_weights = jax.random.normal(get_random_key(), self.weights.shape) * stddev
+        perturbation_biases = jax.random.normal(get_random_key(), self.biases.shape) * stddev
         return perturbation_weights, perturbation_biases
 
     def update_parameters(self, updates):
@@ -157,9 +157,9 @@ class SimulatedAnnealingOptimizer(Optimizer):
             predictions, perturbations = self.forward_with_perturbations(x_batch, self.step_size)
             loss = self.loss.forward(predictions, y_batch)
             delta_E = (loss - self.best_loss)
-            energy_cost = np.exp(-delta_E / self.current_temp)
+            energy_cost = jnp.exp(-delta_E / self.current_temp)
             acceptance_rate = energy_cost if delta_E > 0 else  1.0
-            if delta_E < 0 or np.random.rand() <= acceptance_rate:
+            if delta_E < 0 or jax.random.uniform(get_random_key()) <= acceptance_rate:
                 # Accept proposal
                 self.update_parameters(perturbations)
                 self.best_loss = loss
@@ -193,12 +193,12 @@ class ELM_Optimizer(Optimizer):
         loss_value = self.loss.forward(predictions, y_batch)
 
         # Smooth out y_batch
-        y_batch = np.where(y_batch > 0.5, 0.9, 0.1)
+        y_batch = jnp.where(y_batch > 0.5, 0.9, 0.1)
         expected = y_batch
         for layer in reversed(self.model.get_layers()):
             if isinstance(layer, Dense):
-                x_inv = np.linalg.pinv(layer.last_inputs)
-                weight_approx = np.dot(x_inv, expected)
+                x_inv = jnp.linalg.pinv(layer.last_inputs)
+                weight_approx = jnp.dot(x_inv, expected)
                 layer.weights = layer.weights * alpha + weight_approx * (1 - alpha)
                 # layer.weights = weight_approx
                 # expected = layer.last_inputs

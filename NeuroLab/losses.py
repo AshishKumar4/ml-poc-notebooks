@@ -2,21 +2,25 @@ from .utils import *
 
 class MeanSquaredError:
     @staticmethod
+    @jax.jit
     def forward(predictions, targets):
-        loss = np.mean(0.5 * (predictions - targets)**2)
+        loss = jnp.mean(0.5 * (predictions - targets)**2)
         # print("Loss=>", loss)
         return loss
 
     @staticmethod
+    @jax.jit
     def backward(predictions, targets):
-        # return ((2 * (predictions - targets)) / predictions.size)# * np.ones_like(predictions)
+        # return ((2 * (predictions - targets)) / predictions.size)# * jnp.ones_like(predictions)
         return predictions-targets
 
 class SoftmaxCrossEntropy:
     @staticmethod
+    @jax.jit
     def forward(predictions, targets):
-        return np.nan_to_num(-np.mean(targets * np.log(predictions)) - np.mean((1 - targets) * np.log(1 - predictions)))
+        return jnp.nan_to_num(-jnp.mean(targets * jnp.log(predictions)) - jnp.mean((1 - targets) * jnp.log(1 - predictions)))
 
     @staticmethod
+    @jax.jit
     def backward(predictions, targets):
         return (predictions - targets) / predictions.size
