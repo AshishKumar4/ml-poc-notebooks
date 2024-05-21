@@ -10,4 +10,5 @@ wandb
 .ipynb_checkpoints
 *.keras
 *.tmp
-
+*.pyc
+__pycache__
