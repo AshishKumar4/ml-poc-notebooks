@@ -12,3 +12,6 @@ wandb
 *.tmp
 *.pyc
 __pycache__
+checkpoint
+_METADATA
+_CHECKPOINT_METADATA

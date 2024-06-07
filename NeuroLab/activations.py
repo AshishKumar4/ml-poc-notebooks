@@ -1,4 +1,5 @@
 from .utils import *
+from .layers import *
 
 class Activation(Layer):
     def update_parameters(self, updates):

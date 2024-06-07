@@ -80,33 +80,6 @@ class SGD_Optimizer(Optimizer):
         self.delta *= self.gamma
 
     # import cupy as np
-class SimulatedAnnealingLayer(Layer):
-    def forward_with_perturbations(self, inputs, perturbations):
-        raise NotImplementedError
-
-    def perturb_parameters(self, stddev = 0.01):
-        raise NotImplementedError
-
-class SADense(SimulatedAnnealingLayer, Dense):
-    def __init__(self, n_input, n_output, *args, **kwargs):
-        super().__init__(n_input, n_output, *args, **kwargs)
-
-    def forward_with_perturbations(self, inputs, perturbations):
-        delta_w, delta_b = perturbations
-        self.inputs = inputs
-        self.output = jnp.dot(inputs, self.weights + delta_w) + self.biases + delta_b
-        return self.output
-
-    def perturb_parameters(self, stddev = 0.1):
-        """Randomly perturbs weights and biases with a given standard deviation."""
-        perturbation_weights = jax.random.normal(get_random_key(), self.weights.shape) * stddev
-        perturbation_biases = jax.random.normal(get_random_key(), self.biases.shape) * stddev
-        return perturbation_weights, perturbation_biases
-
-    def update_parameters(self, updates):
-        delta_weights, delta_biases = updates
-        self.weights += delta_weights
-        self.biases += delta_biases
 
 class SimulatedAnnealingOptimizer(Optimizer):
     def __init__(self, model, learning_rate, loss):

@@ -1,5 +1,6 @@
 from typing import Any
 from .utils import *
+from .layers import *
 import sklearn # Only for downloading MNIST Dataset and Accuracy Metrics
 
 class Model:
