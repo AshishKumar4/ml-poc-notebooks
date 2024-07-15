@@ -1,6 +1,6 @@
-# FlaxDiff
+# ![](images/logo.jpeg "FlaxDiff")
 
-## A Versatile and Easy-to-Understand Diffusion Library
+## A Versatile and simple Diffusion Library
 
 In recent years, diffusion and score-based multi-step models have revolutionized the generative AI domain. However, the latest research in this field has become highly math-intensive, making it challenging to understand how state-of-the-art diffusion models work and generate such impressive images. Replicating this research in code can be daunting.
 
@@ -10,9 +10,45 @@ I initially started this project in Keras, being familiar with TensorFlow 2.0, b
 
 The `Diffusion_flax_linen.ipynb` notebook is my main workspace for experiments. Several checkpoints are uploaded to the `pretrained` folder along with a copy of the working notebook associated with each checkpoint. *You may need to copy the notebook to the working root for it to function properly.*
 
+## Example Notebooks from scratch
+
+In the `example notebooks` folder, you will find comprehensive notebooks for various diffusion techniques, written entirely from scratch and are independent of the FlaxDiff library. Each notebook includes detailed explanations of the underlying mathematics and concepts, making them invaluable resources for learning and understanding diffusion models.
+
+### Available Notebooks
+
+- **[Diffusion explained](example%20notebooks/simple%20diffusion%20flax.ipynb)**
+  - **WORK IN PROGRESS** An in-depth exploration of the concept of Diffusion based generative models, DDPM (Denoising Diffusion Probabilistic Models), DDIM (Denoising Diffusion Implicit Models), and the SDE/ODE generalizations of diffusion, with step-by-step explainations and code.
+
+- **[EDM (Elucidating the Design Space of Diffusion-based Generative Models)](example%20notebooks/edm%20flax.ipynb)**
+  - **TODO** A thorough guide to EDM, discussing the innovative approaches and techniques used in this advanced diffusion model.
+
+These notebooks aim to provide a very easy to understand and step-by-step guide to the various diffusion models and techniques. They are designed to be beginner-friendly, and thus although they may not adhere to the exact formulations and implementations of the original papers to make them more understandable and generalizable, I have tried my best to keep them as accurate as possible. If you find any mistakes or have any suggestions, please feel free to open an issue or a pull request.
+
 ## Disclaimer (and About Me)
 
 I worked as a Machine Learning Researcher at Hyperverge from 2019-2021, focusing on computer vision, specifically facial anti-spoofing and facial detection & recognition. Since switching to my current job in 2021, I haven't engaged in as much R&D work, leading me to start this pet project to revisit and relearn the fundamentals and get familiar with the state-of-the-art. My current role involves primarily Golang system engineering with some applied ML work just sprinkled in. Therefore, the code may reflect my learning journey. Please forgive any mistakes and do open an issue to let me know.
+
+Also, few of the text may be generated with help of github copilot, so please excuse any mistakes in the text.
+
+## Index
+
+- [A Versatile and Easy-to-Understand Diffusion Library](#a-versatile-and-easy-to-understand-diffusion-library)
+- [Disclaimer (and About Me)](#disclaimer-and-about-me)
+- [Features](#features)
+  - [Schedulers](#schedulers)
+  - [Model Predictors](#model-predictors)
+  - [Samplers](#samplers)
+  - [Training](#training)
+  - [Models](#models)
+- [Installation of FlaxDiff](#installation)
+- [Getting Started with FlaxDiff](#getting-started)
+  - [Training Example](#training-example)
+  - [Inference Example](#inference-example)
+- [References and Acknowledgements](#references-and-acknowledgements)
+- [Pending things to do list](#pending-things-to-do-list)
+- [Gallery](#gallery)
+- [Contribution](#contribution)
+- [License](#license)
 
 ## Features
 
@@ -133,6 +169,98 @@ sampler = EulerSampler(trainer.model, trainer.state.ema_params, edm_schedule, mo
 samples = sampler.generate_images(num_images=64, diffusion_steps=100, start_step=1000, end_step=0)
 plotImages(samples, dpi=300)
 ```
+
+## References and Acknowledgements
+
+### Research papers and preprints
+- The Original Denoising Diffusion Probabilistic Models (DDPM) [paper](https://arxiv.org/abs/2006.11239)
+- Denoising Diffusion Implicit Models (DDIM) [paper](https://arxiv.org/abs/2010.02502)
+- Improved Denoising Diffusion Probabilistic Models [paper](https://arxiv.org/abs/2102.09672)
+- Score-Based Generative Modeling through Stochastic Differential Equations [paper](https://arxiv.org/pdf/2011.13456)
+- Elucidating the design space of Diffusion-based generative models (EDM) [paper](https://arxiv.org/abs/2206.00364)
+- Perception Prioritized Training of Diffusion Models (P2 Weighting) [paper](https://arxiv.org/abs/2204.00227)
+- Pseudo Numerical Methods for Diffusion Models on Manifolds (PNMDM) [paper](https://arxiv.org/abs/2202.09778)
+- The DPM-Solver:A Fast ODE Solver for Diffusion Probabilistic Model Sampling in Around 10 Steps [paper](https://arxiv.org/pdf/2206.00927)
+
+### Useful blogs and codebases
+
+- An incredible series of blogs on various diffusion related topics by [Sander Dieleman](https://sander.ai/posts/). The posts particularly on [diffusion models](https://sander.ai/2022/01/31/diffusion.html), [Typicality](https://sander.ai/2020/09/01/typicality.html), [Geometry of Diffusion Guidance](https://sander.ai/2023/08/28/geometry.html#warning) and [Noise Schedules](https://sander.ai/2024/06/14/noise-schedules.html) are a must read
+- An awesome blog series by Tony Duan on [Diffusion models from scratch](https://www.tonyduan.com/diffusion/index.html). Although it trains models for MNIST and the implementations are a bit basic, the maths is explained in a very nice way. The codebase is [here](https://github.com/tonyduan/diffusion)
+- The [k-diffusion](https://github.com/crowsonkb/k-diffusion/) codebase Katherine Crowson, which hosts an exhaustive implementation of the EDM paper (Karras et al) along with the DPM-Solver, DPM-Solver++ (both 2S and 2M) in pytorch. Most other diffusion libraries borrow from this.
+- The [Official EDM implementation](https://github.com/NVlabs/edm) by Tero Karras, in pytorch. Really neat code and the reference implementation for all the karras based samplers/schedules.
+- The [Hugging Face Diffusers Library](https://github.com/huggingface/diffusers), Arguably the most complete set of implementations for the latest state-of-the-art techniques and concepts in this field. Written mainly in pytorch, but with flax implementations also available for a lot of the concepts, the focus of this repository is on completeness and ease of understanding as well.
+- The [Keras DDPM Tutorial](https://keras.io/examples/generative/ddpm/) by A_K Nain, and the [Keras DDIM implementation](https://keras.io/examples/generative/ddim/) by András Béres, which are great starting points for beginners to understand the basics of diffusion models. I started my journey by trying to implement the concepts introduced in these tutorials from scratch.
+- Special thanks to ChatGPT-4 by OpenAI for helping clear my doubts.
+
+## Pending things to do list
+
+- **Advanced solvers like DPM/DPM2/DPM++ etc**
+- **SDE versions of the current ODE solvers i.e, ancestral sampling**
+- **Text Conditioned image generation**
+- **Classifier and Classified Free Guidance**
+
+## Gallery
+
+### Images generated by DDPM Sampler in 1000 steps
+
+**Params**: 
+`Dataset: oxford_flowers102`
+`Batch size: 16`
+`Image Size: 64`
+`Training Epochs: 1000`
+`Steps per epoch: 511`
+
+`Training Noise Schedule: CosineNoiseSchedule`
+`Inference Noise Schedule: CosineNoiseSchedule`
+
+`Model: UNet(emb_features=256, 
+            feature_depths=[64, 128, 256, 512],
+            attention_configs=[{"heads":4}, {"heads":4}, {"heads":4}, {"heads":4}, {"heads":4}],
+            num_res_blocks=2,
+            num_middle_res_blocks=1)`
+
+![DDPM Sampler results](images/ddpm2.png)
+
+### Images generated by DDPM Sampler in 1000 steps
+
+**Params**: 
+`Dataset: oxford_flowers102`
+`Batch size: 16`
+`Image Size: 64`
+`Training Epochs: 1000`
+`Steps per epoch: 511`
+
+`Training Noise Schedule: CosineNoiseSchedule`
+`Inference Noise Schedule: CosineNoiseSchedule`
+
+`Model: UNet(emb_features=256, 
+            feature_depths=[64, 128, 256, 512],
+            attention_configs=[{"heads":4}, {"heads":4}, {"heads":4}, {"heads":4}, {"heads":4}],
+            num_res_blocks=2,
+            num_middle_res_blocks=1)`
+
+![DDPM Sampler results](images/ddpm.png)
+
+### Images generated by Heun Sampler in 10 steps (20 model inferences as Heun takes 2x inference steps)
+
+**Params**: 
+`Dataset: oxford_flowers102`
+`Batch size: 16`
+`Image Size: 64`
+`Training Epochs: 1000`
+`Steps per epoch: 511`
+
+`Training Noise Schedule: EDMNoiseScheduler`
+`Inference Noise Schedule: KarrasEDMPredictor`
+
+`Model: UNet(emb_features=256, 
+            feature_depths=[64, 128, 256, 512],
+            attention_configs=[{"heads":4}, {"heads":4}, {"heads":4}, {"heads":4}, {"heads":4}],
+            num_res_blocks=2,
+            num_middle_res_blocks=1)`
+
+![Heun Sampler results](images/heun.png)
+
 
 ## Contribution
 
